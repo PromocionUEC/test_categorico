@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cuestionario de Influencias</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8f7;
+      margin: 0; padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      margin: 20px;
+      max-width: 700px;
+      width: 100%;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    }
+    .logo {
+      height: 50px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .logo img {
+      max-height: 50px;
+    }
+    h2 {
+      color: #1ead74;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    p, ul {
+      color: #333;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    button {
+      background-color: #1ead74;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 15px;
+      display: block;
+      width: 100%;
+    }
+    button:disabled {
+      background-color: #a1d7b3;
+      cursor: not-allowed;
+    }
+    .question-text {
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .primicia {
+      font-weight: bold;
+      font-size: 30px;
+      color: #1ead74;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  height: 20px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #1ead74;
+  transition: width 0.3s ease;
+}
+
+    .rating-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .rating-buttons button {
+      flex: 1;
+      margin: 0 3px;
+      height: 60px; /* tamaño reducido */
+      border-radius: 10px;
+      font-size: 16px;
+      color: white;
+      background-color: #e0e0e0;
+      transition: background-color 0.3s;
+    }
+    .rating-buttons button.selected,
+    .rating-buttons button:hover {
+      background-color: #1ead74;
+    }
+    .progress-text {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #1ead74;
+    }
+    #resultado {
+      text-align: center;
+    }
+    .termometro-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 25px;
+    }
+    .termometro {
+      width: 60px;
+      height: 180px;
+      background: #e0e0e0;
+      border-radius: 25px;
+      position: relative;
+      margin: 0 5px;
+    }
+    .termometro-fill {
+      background: #1ead74;
+      width: 100%;
+      border-radius: 25px 25px 0 0;
+      position: absolute;
+      bottom: 0;
+      height: 0%;
+      transition: height 1s;
+    }
+    .termometro-label {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #1ead74;
+    }
+    .termometro-porcentaje {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      color: #1ead74;
+      top: -25px;
+    }
+    #resultado-final {
+      margin-top: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: black;
+    }
+    @media (max-width: 450px) {
+  .termometro-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px; /* Espacio vertical entre termómetros */
+    padding: 50px 0; /* Espacio arriba y abajo */
+  }
+
+  .termometro {
+    margin: 0 auto;
+    max-width: 200px; /* Que no ocupen todo el ancho */
+  }
+
+  .termometro-titulo {
+    font-size: 14px; /* Texto más legible en celular */
+    text-align: center;
+    margin-bottom: 8px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+
+    <div id="info-escala">
+      <h2>Explicación de la escala</h2>
+      <p>Vamos a realizar el cuestionario de influencias. Por favor selecciona del 1 (en desacuerdo) al 5 (totalmente de acuerdo) según tu opinión.</p>
+      <ul>
+        <li><strong>1:</strong> Muy en desacuerdo</li>
+        <li><strong>2:</strong> En desacuerdo</li>
+        <li><strong>3:</strong> Neutral</li>
+        <li><strong>4:</strong> De acuerdo</li>
+        <li><strong>5:</strong> Muy de acuerdo</li>
+      </ul>
+      <button id="start-btn">Empezar</button>
+    </div>
+
+    <div id="cuestionario" style="display:none;">
+      <div class="progress-text" id="progress-text">Pregunta 1 de 3 (0%)</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="primicia">¿Qué influye más en tu decisión vocacional?</div>
+      <div class="question-text" id="question-text">Pregunta aparecerá aquí</div>
+      <div class="rating-buttons" id="rating-buttons"></div>
+      <button id="next-btn" disabled>Siguiente</button>
+    </div>
+
+    <div id="resultado" style="display:none;">
+      <h2>Resultados</h2>
+      <div class="termometro-container">
+        <div style="position: relative;">
+          <div class="termometro-porcentaje" id="pct-familiar"></div>
+          <div class="termometro">
+            <div id="fill-familiar" class="termometro-fill"></div>
+          </div>
+          <div class="termometro-label">Familiar</div>
+        </div>
+        <div style="position: relative;">
+          <div class="termometro-porcentaje" id="pct-personal"></div>
+          <div class="termometro">
+            <div id="fill-personal" class="termometro-fill"></div>
+          </div>
+          <div class="termometro-label">Personal</div>
+        </div>
+        <div style="position: relative;">
+          <div class="termometro-porcentaje" id="pct-contextual"></div>
+          <div class="termometro">
+            <div id="fill-contextual" class="termometro-fill"></div>
+          </div>
+          <div class="termometro-label">Contextual</div>
+        </div>
+      </div>
+      <div id="resultado-final"></div>
+    </div>
+  </div>
+
+  <script>
+    const preguntas = [
+  { texto: "¿Tus padres o cuidadores influyen directamente en tu decisión vocacional?", categoria: "Familiar" },
+  { texto: "¿Tu familia espera que estudies una carrera específica?", categoria: "Familiar" },
+  { texto: "¿Tu situación económica familiar influye en tu decisión?", categoria: "Familiar" },
+  { texto: "¿Tienes modelos a seguir dentro de tu familia?", categoria: "Familiar" },
+  { texto: "¿Sientes apoyo emocional de tu familia para tomar decisiones?", categoria: "Familiar" },
+  { texto: "¿Tienes claridad sobre lo que te apasiona?", categoria: "Personal" },
+  { texto: "¿Te conoces lo suficiente para saber qué quieres estudiar?", categoria: "Personal" },
+  { texto: "¿Confías en tu capacidad para tomar decisiones?", categoria: "Personal" },
+  { texto: "¿Tienes metas personales definidas?", categoria: "Personal" },
+  { texto: "¿Te interesa elegir una carrera acorde a tus talentos?", categoria: "Personal" },
+  { texto: "¿Tienes acceso a información sobre programas académicos?", categoria: "Contextual" },
+  { texto: "¿Te afecta la opinión de tus amigos al decidir?", categoria: "Contextual" },
+  { texto: "¿Tu entorno escolar te ha orientado vocacionalmente?", categoria: "Contextual" },
+  { texto: "¿Consideras las oportunidades laborales al decidir?", categoria: "Contextual" },
+  { texto: "¿Crees que el contexto social o político afecta tu decisión?", categoria: "Contextual" },
+];
+
+    let respuestas = new Array(preguntas.length).fill(0);
+    let preguntaActual = 0;
+
+    const startBtn = document.getElementById("start-btn");
+    const nextBtn = document.getElementById("next-btn");
+
+    const infoEscalaDiv = document.getElementById("info-escala");
+    const cuestionarioDiv = document.getElementById("cuestionario");
+    const resultadoDiv = document.getElementById("resultado");
+    const ratingButtonsDiv = document.getElementById("rating-buttons");
+    const questionText = document.getElementById("question-text");
+    const progressText = document.getElementById("progress-text");
+
+    const fillFamiliar = document.getElementById("fill-familiar");
+    const fillPersonal = document.getElementById("fill-personal");
+    const fillContextual = document.getElementById("fill-contextual");
+
+    const pctFamiliar = document.getElementById("pct-familiar");
+    const pctPersonal = document.getElementById("pct-personal");
+    const pctContextual = document.getElementById("pct-contextual");
+    const resultadoFinal = document.getElementById("resultado-final");
+
+    startBtn.onclick = () => {
+      infoEscalaDiv.style.display = "none";
+      cuestionarioDiv.style.display = "block";
+      mostrarPregunta();
+    };
+
+    nextBtn.onclick = () => {
+      if (preguntaActual < preguntas.length - 1) {
+        preguntaActual++;
+        mostrarPregunta();
+      } else {
+        cuestionarioDiv.style.display = "none";
+        mostrarResultados();
+      }
+    };
+
+const progressBar = document.getElementById("progress-bar");
+
+    function mostrarPregunta() {
+      const pregunta = preguntas[preguntaActual];
+      questionText.textContent = pregunta.texto;
+      ratingButtonsDiv.innerHTML = "";
+
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.value = i;
+        btn.onclick = () => {
+          respuestas[preguntaActual] = i;
+          marcarSeleccion(i);
+          nextBtn.disabled = false;
+        };
+        ratingButtonsDiv.appendChild(btn);
+      }
+
+      marcarSeleccion(respuestas[preguntaActual]);
+      nextBtn.disabled = respuestas[preguntaActual] === 0;
+
+      const porcentaje = Math.round(((preguntaActual + 1) / preguntas.length) * 100);
+      progressText.textContent = `Pregunta ${preguntaActual + 1} de ${preguntas.length} (${porcentaje}%)`;
+      progressBar.style.width = porcentaje + "%";
+      nextBtn.textContent = (preguntaActual === preguntas.length - 1) ? "Ver resultados" : "Siguiente";
+    }
+
+
+    function marcarSeleccion(valor) {
+      Array.from(ratingButtonsDiv.children).forEach(btn => {
+        btn.classList.toggle("selected", btn.value == valor);
+      });
+    }
+
+        function mostrarResultados() {
+      resultadoDiv.style.display = "block";
+
+      const sum = { Familiar: 0, Personal: 0, Contextual: 0 };
+      const count = { Familiar: 0, Personal: 0, Contextual: 0 };
+
+      // Sumar puntuaciones por categoría
+      preguntas.forEach((pregunta, idx) => {
+        sum[pregunta.categoria] += respuestas[idx];
+        count[pregunta.categoria]++;
+      });
+
+      // Calcular porcentajes (sobre una escala máxima de 5)
+      const porcentajeFamiliar = count.Familiar ? (sum.Familiar / (count.Familiar * 5)) * 100 : 0;
+      const porcentajePersonal = count.Personal ? (sum.Personal / (count.Personal * 5)) * 100 : 0;
+      const porcentajeContextual = count.Contextual ? (sum.Contextual / (count.Contextual * 5)) * 100 : 0;
+
+      // Asignar porcentajes visuales
+      fillFamiliar.style.height = porcentajeFamiliar + "%";
+      fillPersonal.style.height = porcentajePersonal + "%";
+      fillContextual.style.height = porcentajeContextual + "%";
+
+      pctFamiliar.textContent = Math.round(porcentajeFamiliar) + "%";
+      pctPersonal.textContent = Math.round(porcentajePersonal) + "%";
+      pctContextual.textContent = Math.round(porcentajeContextual) + "%";
+
+      // Mostrar resultado final según la categoría predominante
+      const influencias = [
+        { categoria: "Familiar", valor: porcentajeFamiliar },
+        { categoria: "Personal", valor: porcentajePersonal },
+        { categoria: "Contextual", valor: porcentajeContextual },
+      ];
+
+      influencias.sort((a, b) => b.valor - a.valor);
+
+      resultadoFinal.textContent = `Tu principal influencia vocacional es de tipo: ${influencias[0].categoria}`;
+    }
+  </script>
+</body>
+</html>
